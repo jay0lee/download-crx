@@ -66,6 +66,15 @@
     </div>
 
     <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const prodVersionInput = document.getElementById('prodVersion');
+            const ua = navigator.userAgent;
+            const match = ua.match(/Chrome\/(\d+\.\d+\.\d+\.\d+)/);
+            if (match && match[1]) {
+                prodVersionInput.value = match[1];
+            }
+        });
+        
         const appIdInput = document.getElementById('appId');
         const prodVersionInput = document.getElementById('prodVersion');
         const archInput = document.getElementById('arch');
