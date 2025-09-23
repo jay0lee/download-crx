@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRX Downloader</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+            color: #1f2937;
+        }
+    </style>
+</head>
+<body class="p-4 sm:p-8 flex items-center justify-center min-h-screen">
+    <div class="bg-white p-6 sm:p-10 rounded-3xl shadow-2xl w-full max-w-lg space-y-6 transform transition-all duration-300 hover:scale-105">
+        <h1 class="text-3xl sm:text-4xl font-extrabold text-center text-gray-900 leading-tight">
+            CRX URL Generator
+        </h1>
+        <p class="text-center text-gray-500 max-w-md mx-auto">
+            Input the extension details to generate a direct download URL.
+        </p>
+
+        <div class="space-y-4">
+            <!-- App ID -->
+            <div>
+                <label for="appId" class="block text-sm font-semibold text-gray-700 mb-1">App ID (e.g., ekajlcmdfcigmdbphhifahdfjbkciflj)</label>
+                <input type="text" id="appId" placeholder="Enter app ID" class="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200">
+            </div>
+
+            <!-- Chrome Version -->
+            <div>
+                <label for="prodVersion" class="block text-sm font-semibold text-gray-700 mb-1">Chrome Version (e.g., 139.0.7258.164)</label>
+                <input type="text" id="prodVersion" placeholder="Enter Chrome version" class="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200">
+            </div>
+
+            <!-- Architecture -->
+            <div>
+                <label for="arch" class="block text-sm font-semibold text-gray-700 mb-1">Architecture (e.g., x64)</label>
+                <input type="text" id="arch" placeholder="Enter architecture" class="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200">
+            </div>
+
+            <!-- Extension Formats -->
+            <div>
+                <label for="acceptFormat" class="block text-sm font-semibold text-gray-700 mb-1">Extension Formats (e.g., crx2,crx3)</label>
+                <input type="text" id="acceptFormat" placeholder="Enter formats" class="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200">
+            </div>
+
+            <!-- Generate Button -->
+            <button id="generateBtn" class="w-full bg-blue-600 text-white font-bold py-3 px-4 rounded-xl shadow-lg hover:bg-blue-700 transform hover:scale-105 transition duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                Generate URL
+            </button>
+        </div>
+
+        <!-- Output and Download Link Section -->
+        <div id="resultSection" class="hidden space-y-4">
+            <div class="text-center">
+                <label class="block text-sm font-semibold text-gray-700 mb-2">Click to Download</label>
+                <a id="downloadLink" href="#" target="_blank" class="block text-center bg-green-500 text-white font-bold py-3 px-4 rounded-xl shadow-lg hover:bg-green-600 transform hover:scale-105 transition duration-300 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-offset-2">
+                    Download
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const appIdInput = document.getElementById('appId');
+        const prodVersionInput = document.getElementById('prodVersion');
+        const archInput = document.getElementById('arch');
+        const acceptFormatInput = document.getElementById('acceptFormat');
+        const generateBtn = document.getElementById('generateBtn');
+        const resultSection = document.getElementById('resultSection');
+        const downloadLink = document.getElementById('downloadLink');
+
+        generateBtn.addEventListener('click', () => {
+            // Get values from inputs
+            const appId = appIdInput.value.trim();
+            const prodVersion = prodVersionInput.value.trim();
+            const arch = archInput.value.trim();
+            const acceptFormat = acceptFormatInput.value.trim();
+
+            if (!appId || !prodVersion || !arch || !acceptFormat) {
+                // For a more robust app, you would use a custom modal for this.
+                resultSection.classList.add('hidden');
+                // You could add a message here to a status area instead of relying on a link.
+                return;
+            }
+
+            // Construct the 'x' parameter which is itself a URL-encoded query string
+            const xParamValue = `brand=ZZAD&id=${appId}&uc=None&v=0.0670243967073`;
+            const encodedXParam = encodeURIComponent(xParamValue);
+
+            // Use URLSearchParams for clean and safe parameter handling
+            const params = new URLSearchParams();
+            params.append('lang', 'en-US');
+            params.append('prodversion', prodVersion);
+            params.append('arch', arch);
+            params.append('acceptformat', acceptFormat);
+            params.append('prod', 'chromecrx');
+            params.append('os', 'cros');
+            params.append('nacl_arch', 'x86-64');
+            params.append('prodchannel', 'stable');
+            params.append('response', 'redirect');
+            params.append('x', encodedXParam);
+
+            // Construct the final URL
+            const url = `https://clients2.google.com/service/update2/crx?${params.toString()}`;
+
+            // Set the href of the download link and make the section visible
+            downloadLink.href = url;
+            resultSection.classList.remove('hidden');
+        });
+    </script>
+</body>
+</html>
